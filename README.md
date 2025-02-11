@@ -7,9 +7,6 @@ date: 2-9-2025
 # CS506 Final Project
 This project will focus on **ICE** (U.S Immigration and Customs Enforcement) arrests, detentions, expulsions and removals.
 
-# Project Description
-We may also analyze regional trends, such as locations where ICE activity is higher, as well as seeing if we are able to predict the future rise of such activity. 
-
 ## Goal(s)
 From a general browsing of the yearly trends, we can see a consistent (and disconcerting) increase in all forms of activity throughout the country. The goal of this project is to identify and measure the extent to which specific demographics are disproportionately affected by anti-migrant operations.
 
