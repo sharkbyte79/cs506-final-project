@@ -26,9 +26,6 @@ class DataPreprocessor:
 
         return df
 
-    # def sort_df_by_date(df: DataFrame, ascending: bool = True) -> DataFrame:
-    #     return df.sort_values(by=["Month-Year"], ascending=ascending)
-
     def split_data(df: DataFrame) -> tuple[DataFrame, ...]:
         """Returns a split of the given data as train and test sets"""
         x_train, x_test, y_train, _ = train_test_split(
