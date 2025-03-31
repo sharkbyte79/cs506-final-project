@@ -12,47 +12,75 @@ TARGET_FILE = "ICE_data.csv"
 FILEPATH = f"{PROJECT_ROOT}/data/raw/{TARGET_FILE}"
 
 
+
+
 def plot_bar_counts(
     df,
     column_name,
     ascending=True,
     top_n=None,
     integer_ticks=False,
-    missing_label="Missing"
+    missing_label="Missing",
+    try_parse_dates=False,
+    horizontal_if_many=True,
+    horizontal_threshold=10
 ):
-    # Replace NaN with a label
     series = df[column_name].fillna(missing_label)
-
-    # Count values
     value_counts = series.value_counts()
 
-    # Attempt to convert index to numeric (for columns like years)
-    index_as_series = pd.Series(value_counts.index)
-    index_numeric = pd.Series(pd.to_numeric(index_as_series, errors="coerce"))
-
-    if index_numeric.notna().all():
-        # If all index values can be interpreted as numbers, sort numerically
-        sorted_index = index_numeric.sort_values(ascending=ascending).index
-        value_counts = value_counts.iloc[sorted_index]
+    # Sorting
+    if try_parse_dates:
+        date_index = pd.to_datetime(value_counts.index, format="%b %Y", errors="coerce")
+        if date_index.notna().all():
+            sorted_index = date_index.sort_values(ascending=ascending).index
+            value_counts = value_counts.iloc[sorted_index]
+        else:
+            value_counts = value_counts.sort_values(ascending=ascending)
     else:
-        # Otherwise, sort by count
-        value_counts = value_counts.sort_values(ascending=ascending)
+        index_numeric = pd.Series(pd.to_numeric(pd.Series(value_counts.index), errors="coerce"))
+        if index_numeric.notna().all():
+            sorted_index = index_numeric.sort_values(ascending=ascending).index
+            value_counts = value_counts.iloc[sorted_index]
+        else:
+            value_counts = value_counts.sort_values(ascending=ascending)
 
     if top_n:
         value_counts = value_counts.head(top_n)
 
-    ax = value_counts.plot(kind='bar')
-    plt.title(f'Count of {column_name}')
-    plt.ylabel('Number of Records')
-    plt.xlabel(column_name)
-    plt.xticks(rotation=45)
-    plt.tight_layout()
+    use_horizontal = horizontal_if_many and len(value_counts) > horizontal_threshold
+    kind = "barh" if use_horizontal else "bar"
+
+    # Dynamic figure size
+    if use_horizontal:
+        fig_height = max(0.4 * len(value_counts), 6)
+        fig, ax = plt.subplots(figsize=(12, fig_height))
+    else:
+        fig_width = max(0.5 * len(value_counts), 10)
+        fig, ax = plt.subplots(figsize=(fig_width, 6))
+
+    value_counts.plot(kind=kind, ax=ax)
+
+    ax.set_title(f'Count of {column_name}')
+    ax.set_ylabel('Number of Records' if not use_horizontal else column_name)
+    ax.set_xlabel(column_name if not use_horizontal else 'Number of Records')
+
+    if use_horizontal:
+        # Explicitly set all ticks and labels to avoid skipping
+        ax.set_yticks(range(len(value_counts)))
+        ax.set_yticklabels(value_counts.index, fontsize=10)
+        plt.subplots_adjust(left=0.3)  # More room for long labels
+    else:
+        ax.set_xticks(range(len(value_counts)))
+        ax.set_xticklabels(value_counts.index, rotation=60, ha='right', fontsize=10)
+        plt.subplots_adjust(bottom=0.3)
 
     if integer_ticks:
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        if use_horizontal:
+            ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     plt.show()
+
 
 
 
@@ -141,21 +169,26 @@ def print_all_stats(df):
 def main():
     dataframe = csv_to_df(FILEPATH)
     print("Dataframe: ", dataframe)
-    # print_all_stats(dataframe) # -- print out summary for each df column
+    print_all_stats(dataframe) # -- print out summary for each df column
 
     # bar plots
-    # for col_name in dataframe:
-    #     plot_bar_counts(
-    #         df = dataframe,
-    #         column_name = col_name,
-    #         ascending=True,
-    #         integer_ticks=True
-    #     )
-    # plot_time_series_by_year(dataframe, "Fiscal Year")
+    for col_name in dataframe:
+        shouldParse = False
+        if col_name == "Month-Year":
+            shouldParse = True
 
-    # plot_heatmap(dataframe, "Fiscal Year", "Country of Citizenship")
-    # plot_heatmap(dataframe, "Fiscal Year", "AOR")
-    # plot_heatmap(dataframe, "AOR", "Criminality")
+        plot_bar_counts(
+            df = dataframe,
+            column_name = col_name,
+            ascending=True,
+            integer_ticks=True,
+            try_parse_dates = shouldParse
+        )
+    plot_time_series_by_year(dataframe, "Fiscal Year")
+
+    plot_heatmap(dataframe, "Fiscal Year", "Country of Citizenship")
+    plot_heatmap(dataframe, "Fiscal Year", "AOR")
+    plot_heatmap(dataframe, "AOR", "Criminality")
     plot_distribution(dataframe, "Fiscal Year", integer_ticks=True)
 
 
