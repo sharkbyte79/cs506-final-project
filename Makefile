@@ -19,10 +19,6 @@ activate: ## Enter shell of activated Poetry venv
 	@echo "Entering environment shell"
 	poetry shell
 
-add-dependency: ## Add dependency to Poetry
-	@echo "Usage: make add-dependency name=<package>"
-	@poetry add $(name)
-
 deactivate: ## Exit shell of activated Poetry venv
 	@echo "Exiting environment shell"
 	@exit
