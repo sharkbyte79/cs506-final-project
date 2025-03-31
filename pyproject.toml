@@ -1,22 +1,18 @@
-[project]
+[tool.poetry]
 name = "cs506_final_project"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "Layne",email = "pierce77@bu.edu"}
-]
+description = "Final project for CS506"
+authors = ["Layne <pierce77@bu.edu>", "Pardesh <pard3sh@bu.edu>"]
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "numpy (>=2.2.4,<3.0.0)",
-    "pandas (>=2.2.3,<3.0.0)",
-    "scikit-learn (>=1.6.1,<2.0.0)"
-]
-
-[tool.poetry]
 packages = [{include = "cs506_final_project", from = "src"}]
 
+[tool.poetry.dependencies]
+python = ">=3.12"
+numpy = ">=2.2.4,<3.0.0"
+pandas = ">=2.2.3,<3.0.0"
+scikit-learn = ">=1.6.1,<2.0.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
