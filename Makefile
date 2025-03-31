@@ -15,6 +15,18 @@ install: poetry
 	@echo "Installing dependencies..."
 	poetry install
 
-activate: 
-	@echo "Activating venv..."
-	poetry env activate
+activate:
+	@echo "Entering environment shell"
+	poetry shell
+
+deactivate:
+	@echo "Exiting environment shell"
+	exit
+
+help:
+	@echo "Available commands:"
+	@echo "  make install       - Install project dependencies"
+	@echo "  make clean         - Remove virtual environment and lockfile"
+	@echo "  make poetry        - Installs Poetry if not installed"
+	@echo "  make activate      - Enter shell of Poetry virtual environment"
+	@echo "  make deactivate    - Exit shell of Poetry virtual environment"
