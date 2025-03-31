@@ -13,8 +13,8 @@ def csv_to_df(fpath: str) -> DataFrame:
         fpath, na_values={"Area of Responsibility (AOR)": ["Unmapped AOR Records"]}
     )  # Convert rows where AOR is 'Unmapped' to NaN
 
-    # shorten name for 'Area of Responsibility (AOR) column
-    df = df.rename(columns={"Area of Responsibility (AOR)": "AOR"})
+    # shorten long column names
+    df = df.rename(columns={"Area of Responsibility (AOR)": "AOR", "Country of Citizenship": "Citizenship", "Administrative Arrests": "Arrests"})
 
     # Convert 'Month-Year features to datetime objects for sorting
     df["Month-Year"] = to_datetime(df["Month-Year"], format="%b %Y")
