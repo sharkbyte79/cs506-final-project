@@ -62,6 +62,16 @@ poetry shell # how to activate and work within the developer environment
 
 The general order of commands is as follows:
 
+`make Poetry` (if not installed)
+
+`make install` (get dependencies)
+
+`make activate` (run environment)
+
+`poetry [add or remove]` (to add necessary packages) 
+
+Poetry version: -------------------------------------------------------------------------------------------------------
+
 `poetry install` (after freshly cloning the repo)
 
 `poetry shell` (to develop within the development environment)
