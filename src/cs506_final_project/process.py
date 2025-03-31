@@ -1,5 +1,7 @@
-from pandas import DataFrame, read_csv, to_datetime
+from pandas import DataFrame, read_csv, to_datetime, concat
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.ensemble import RandomForestClassifier
 
 
 # wrapper functions for data manipulation and preprocessing
@@ -30,11 +32,35 @@ def csv_to_df(fpath: str) -> DataFrame:
 
     return df
 
+def encode_and_scale(train_df: DataFrame, test_df: DataFrame, id: str, target: str, categorial: list[str]):
+    """Returns a version of the given DataFrame df with label encoding and standard scaling applied"""
 
-def split_data(df: DataFrame) -> tuple[DataFrame, ...]:
+    numerical: list[str] = [col for col in train_df.columns if col not in [id, target, *categorial]]
+    for col in categorial:
+        encoder: LabelEncoder = LabelEncoder() # Create encoder for each iteration
+        combined: DataFrame = concat([train_df[col], train_df[col]]) # Combine the columns for consistent label encoding
+        encoder.fit(combined)
+
+        train_df[col] = encoder.transform(train_df[col])
+        test_df[col] = encoder.transform(test_df[col])
+    
+    # Using standard scaling on each numerical column
+    # Every value is considered equally important when scaled with mean + stdev
+    scaler: StandardScaler = StandardScaler()
+    train_df[numerical] = scaler.fit_transform(train_df[numerical])
+    test_df[numerical] = scaler.fit(test_df[numerical])
+
+    # TODO: define X_train, Y_train, etc for model training
+
+    
+
+def split_data(df: DataFrame) -> tuple[DataFrame, DataFrame]:
     """Returns a split of the given data as train and test sets"""
-    x_train, x_test, y_train, _ = train_test_split(
-        df, random_state=42
-    )  # discard y_test
+    train, test = train_test_split(
+        df, random_state=42, test_size=0.3
+    )  
 
-    return x_train, x_test, y_train  # pyright: ignore
+    map((DataFrame), train, test)
+
+    return train, test
+
