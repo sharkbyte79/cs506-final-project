@@ -9,9 +9,9 @@ from cs506_final_project.process import csv_to_df
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TARGET_FILE = "ICE_data.csv"
-OTHER_TARGET = "Over_Time_Years_Removals.csv"
+# OTHER_TARGET = "Over_Time_Years_Removals.csv"
 FILEPATH = f"{PROJECT_ROOT}/data/raw/{TARGET_FILE}"
-FILEPATH2 = f"{PROJECT_ROOT}/data/raw/{OTHER_TARGET}"
+# FILEPATH2 = f"{PROJECT_ROOT}/data/raw/{OTHER_TARGET}"
 
 
 def plot_bar_counts(
@@ -173,8 +173,8 @@ def print_all_stats(df):
 
 def main():
     dataframe = csv_to_df(FILEPATH)
-    other_dataframe = csv_to_df(FILEPATH2)
-    print(other_dataframe)
+    # other_dataframe = csv_to_df(FILEPATH2)
+    # print(other_dataframe)
     print("\n\n\n\n\n\n\n\n")
     print("Dataframe: ", dataframe)
     print_all_stats(dataframe)  # -- print out summary for each df column
