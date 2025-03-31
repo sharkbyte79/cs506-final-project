@@ -11,7 +11,7 @@ poetry: ## Installs Poetry if not already installed
 		echo "Poetry is already installed"; \
 	fi
 
-install: poetry ## Install project dependencies
+install: poetry ## Installs project dependencies
 	@echo "Installing dependencies..."
 	poetry install
 
