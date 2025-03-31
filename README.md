@@ -27,7 +27,7 @@ This project will focus on **ICE** (U.S Immigration and Customs Enforcement) arr
 
 You *could* run the poetry commands (documented in the following section) by themselves but `Layne` added Makefile commands to make it easier .
 
-***TLDR: *** run `make help`
+***TLDR:*** run `make help`
 
 ```bash
 make install # install dependencies for the project
