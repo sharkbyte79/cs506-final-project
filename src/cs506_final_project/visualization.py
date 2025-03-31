@@ -9,9 +9,9 @@ from cs506_final_project.process import csv_to_df
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TARGET_FILE = "ICE_data.csv"
+OTHER_TARGET = "Over_Time_Years_Removals.csv"
 FILEPATH = f"{PROJECT_ROOT}/data/raw/{TARGET_FILE}"
-
-
+FILEPATH2 = f"{PROJECT_ROOT}/data/raw/{OTHER_TARGET}"
 
 
 def plot_bar_counts(
@@ -23,7 +23,7 @@ def plot_bar_counts(
     missing_label="Missing",
     try_parse_dates=False,
     horizontal_if_many=True,
-    horizontal_threshold=10
+    horizontal_threshold=10,
 ):
     series = df[column_name].fillna(missing_label)
     value_counts = series.value_counts()
@@ -37,7 +37,9 @@ def plot_bar_counts(
         else:
             value_counts = value_counts.sort_values(ascending=ascending)
     else:
-        index_numeric = pd.Series(pd.to_numeric(pd.Series(value_counts.index), errors="coerce"))
+        index_numeric = pd.Series(
+            pd.to_numeric(pd.Series(value_counts.index), errors="coerce")
+        )
         if index_numeric.notna().all():
             sorted_index = index_numeric.sort_values(ascending=ascending).index
             value_counts = value_counts.iloc[sorted_index]
@@ -60,9 +62,9 @@ def plot_bar_counts(
 
     value_counts.plot(kind=kind, ax=ax)
 
-    ax.set_title(f'Count of {column_name}')
-    ax.set_ylabel('Number of Records' if not use_horizontal else column_name)
-    ax.set_xlabel(column_name if not use_horizontal else 'Number of Records')
+    ax.set_title(f"Count of {column_name}")
+    ax.set_ylabel("Number of Records" if not use_horizontal else column_name)
+    ax.set_xlabel(column_name if not use_horizontal else "Number of Records")
 
     if use_horizontal:
         # Explicitly set all ticks and labels to avoid skipping
@@ -71,7 +73,7 @@ def plot_bar_counts(
         plt.subplots_adjust(left=0.3)  # More room for long labels
     else:
         ax.set_xticks(range(len(value_counts)))
-        ax.set_xticklabels(value_counts.index, rotation=60, ha='right', fontsize=10)
+        ax.set_xticklabels(value_counts.index, rotation=60, ha="right", fontsize=10)
         plt.subplots_adjust(bottom=0.3)
 
     if integer_ticks:
@@ -82,13 +84,11 @@ def plot_bar_counts(
     plt.show()
 
 
-
-
 def plot_time_series_by_year(df, year_column):
     df = df.copy()
 
-    df[year_column] = df[year_column].astype(str).str.extract(r'(\d{4})')[0]
-    df[year_column] = pd.to_numeric(df[year_column], errors='coerce')
+    df[year_column] = df[year_column].astype(str).str.extract(r"(\d{4})")[0]
+    df[year_column] = pd.to_numeric(df[year_column], errors="coerce")
 
     # Drop NaNs before converting to int
     df = df.dropna(subset=[year_column])
@@ -97,7 +97,7 @@ def plot_time_series_by_year(df, year_column):
     # Group and sort by year
     year_counts = df[year_column].value_counts().sort_index()
 
-    ax = year_counts.plot(marker='o')
+    ax = year_counts.plot(marker="o")
     ax.set_title("Detainments per Fiscal Year")
     ax.set_xlabel(year_column)
     ax.set_ylabel("Number of Records")
@@ -110,40 +110,44 @@ def plot_time_series_by_year(df, year_column):
     plt.tight_layout()
     plt.show()
 
+
 def plot_time_series(df, date_column):
     df[date_column] = pd.to_datetime(df[date_column])
     ts = df[date_column].value_counts().sort_index()
-    ts = ts.resample('M').sum()  # monthly counts
+    ts = ts.resample("M").sum()  # monthly counts
     ts.plot()
-    plt.title('Detainments Over Time')
-    plt.ylabel('Count')
-    plt.xlabel('Date')
+    plt.title("Detainments Over Time")
+    plt.ylabel("Count")
+    plt.xlabel("Date")
     plt.tight_layout()
     plt.show()
+
 
 def plot_heatmap_alt(df, groupby_col):
     grouped = df[groupby_col].value_counts().unstack(fill_value=0)
-    sns.heatmap(grouped, cmap="Blues", linewidths=.5)
-    plt.title(f'Geographic Heatmap by {groupby_col}')
+    sns.heatmap(grouped, cmap="Blues", linewidths=0.5)
+    plt.title(f"Geographic Heatmap by {groupby_col}")
     plt.tight_layout()
     plt.show()
 
+
 def plot_heatmap(df, row_col, col_col):
     cross_tab = pd.crosstab(df[row_col], df[col_col])
-    sns.heatmap(cross_tab, cmap="Blues", linewidths=.5)
+    sns.heatmap(cross_tab, cmap="Blues", linewidths=0.5)
     plt.title(f"Heatmap: {row_col} vs {col_col}")
     plt.ylabel(row_col)
     plt.xlabel(col_col)
     plt.tight_layout()
     plt.show()
 
+
 def plot_distribution(df, column_name, integer_ticks=False, bins=7):
     data = df[column_name].dropna()
 
-    ax = data.plot(kind='hist', bins=bins, alpha=0.7)
-    plt.title(f'Distribution of {column_name}')
+    ax = data.plot(kind="hist", bins=bins, alpha=0.7)
+    plt.title(f"Distribution of {column_name}")
     plt.xlabel(column_name)
-    plt.ylabel('Frequency')
+    plt.ylabel("Frequency")
     plt.tight_layout()
 
     if integer_ticks:
@@ -157,19 +161,23 @@ def plot_distribution(df, column_name, integer_ticks=False, bins=7):
     # plt.show()
 
 
-
 def print_column_stats(df, column_name):
     print(f"Stats for {column_name}")
     print(df[column_name].describe())
+
 
 def print_all_stats(df):
     for col in df:
         print_column_stats(df, col)
 
+
 def main():
     dataframe = csv_to_df(FILEPATH)
+    other_dataframe = csv_to_df(FILEPATH2)
+    print(other_dataframe)
+    print("\n\n\n\n\n\n\n\n")
     print("Dataframe: ", dataframe)
-    print_all_stats(dataframe) # -- print out summary for each df column
+    print_all_stats(dataframe)  # -- print out summary for each df column
 
     # bar plots
     for col_name in dataframe:
@@ -178,11 +186,11 @@ def main():
             shouldParse = True
 
         plot_bar_counts(
-            df = dataframe,
-            column_name = col_name,
+            df=dataframe,
+            column_name=col_name,
             ascending=True,
             integer_ticks=True,
-            try_parse_dates = shouldParse
+            try_parse_dates=shouldParse,
         )
     plot_time_series_by_year(dataframe, "Fiscal Year")
 
