@@ -120,6 +120,8 @@ For numeric columns, we include distribution plots (`plot_distribution`) to show
 
 These visual tools are helpful for spotting patterns, trends or biases.
 
+Please See [following directory](data/visualizations/) to view the visualizations we've prepared.
+
 ## Results
 
 ### Visualization results
