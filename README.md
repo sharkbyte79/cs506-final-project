@@ -9,6 +9,8 @@ date: 2-9-2025
 # CS506 Final Project
 This project will focus on **ICE** (U.S Immigration and Customs Enforcement) arrests, detentions, expulsions and removals.
 
+See the midterm presentation [here](https://youtu.be/zlY1djLtqp8).
+
 ## Use
 
 
