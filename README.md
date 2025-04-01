@@ -78,32 +78,34 @@ Poetry version: ----------------------------------------------------------------
 
 `poetry [add or remove] package-name` (as needed over the course of development)
 
-
-
-
-
-# Update the following sections:
-
 ## Goal(s)
-From a general browsing of the yearly trends, we can see a consistent (and disconcerting) increase in all forms of activity throughout the country. The goal of this project is to identify and measure the extent to which specific demographics are disproportionately affected by anti-migrant operations.
-
-If that alone is insufficient in scope, we can analyze regional trends such as locations where ICE activity is higher, as well as seeing if we are able to predict the future rise of such activity.
+From a general browsing of the yearly trends, we can see a consistent (and disconcerting) increase in all forms of activity throughout the country. The goal of this project is to identify and measure the extent to which specific demographics are disproportionately affected by anti-migrant operations, as well as nalyze regional trends such as locations where ICE activity is higher and making informed predictions on future trends.
 
 With the current discourse and political situation regarding this topic in the United States, we believe it is important to have a strong understanding of the government’s actions. With that being said, it is possible that the goals of the project will change through working with the data.
 
 ## Data
-The datasets we are considering include:
-- Official [ICE enforcement and removal statistics](https://www.ice.gov/spotlight/statistics)
-- U.S. Government Accountability Office
-- Supplemental datasets from [Data.gov](https://catalog.data.gov/dataset?publisher=ICE)
+Presently, Official [ICE enforcement and removal statistics](https://www.ice.gov/spotlight/statistics)
 
-We will be able to directly download datasets from the ICE website on arrests, detainments, etc., and scrape data from other sources as needed.
 
-### Modeling
-So far we are only aware of the clustering method, which could serve to expose demographic biases (if present) as previously mentioned. We plan to consider alternatives as we are exposed to more in lecture.
+## Preprocessing 
+The processing steps we have taken with the data on arrests by ICE officials begins with a simple conversion from `csv` format to an easily-manipulatable `DataFrame` by the `csv_to_df` function. We also prepare the data for viewing and further processing by sorting chronologically on the "Month-Year" feature, replacing "Unmapped" areas of responsibility with `NaN`, and shortening a number of the longer feature names so that they may be more easily referenced.
 
-### Visualization
-A visualization our group had in mind were heatmaps of expulsions/detentions by region. We will consider other forms of visualization as we learn throughout the course
+Further preprocessing that is more specific to our chosen methods of modeling is performed by establishing an upper threshold for what value for the "Administrative Arrests" feature constitutes a "High Arrest Level" and appending this new feature to the dataframe. This feature is a *binary* value, an arrestee is either "High Arrest Level" or not.
 
-## Testing
-At our current level of understanding the course content, we are unsure of how to plan testing.
+## Modeling
+At this time, we have chosen to explore the following modeling methods:
+- K-Nearest Neighbors (as discussed in class)
+- Random Forests
+
+These methods for classification are ideal for our expressed goal of analyzing *demographic biases* and other discrepancies that may be evident in the **ICE** dataset.
+
+For the **Random Decision Forests**, we perform further preprocessing by normalizing non-target numerical features with **Standard Scaling** (Fiscal quarter, month and year) and [one-hot encoding](https://www.geeksforgeeks.org/ml-one-hot-encoding/) for assigning binary indicators to categorical features (Criminality, area of responsibility and an individual's country of citizenship). The actual modeling consists of an aggregation of 100 decision trees for predictions regarding the number of administrative arrests.
+
+We perform the same preprocessing steps for the  **K-Nearest Neighbors** model which is trained for the same purpose.
+
+## Visualization
+
+## Results
+
+
+
