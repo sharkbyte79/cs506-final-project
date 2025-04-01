@@ -68,7 +68,7 @@ The general order of commands is as follows:
 
 `make activate` (run environment)
 
-`poetry [add or remove]` (to add necessary packages) 
+`poetry [add or remove]` (to add necessary packages)
 
 Poetry version: -------------------------------------------------------------------------------------------------------
 
@@ -85,9 +85,10 @@ With the current discourse and political situation regarding this topic in the U
 
 ## Data
 Presently, Official [ICE enforcement and removal statistics](https://www.ice.gov/spotlight/statistics)
+We have specifically used the 2021-2024 detainment data.
 
 
-## Preprocessing 
+## Preprocessing
 The processing steps we have taken with the data on arrests by ICE officials begins with a simple conversion from `csv` format to an easily-manipulatable `DataFrame` by the `csv_to_df` function. We also prepare the data for viewing and further processing by sorting chronologically on the "Month-Year" feature, replacing "Unmapped" areas of responsibility with `NaN`, and shortening a number of the longer feature names so that they may be more easily referenced.
 
 Further preprocessing that is more specific to our chosen methods of modeling is performed by establishing an upper threshold for what value for the "Administrative Arrests" feature constitutes a "High Arrest Level" and appending this new feature to the dataframe. This feature is a *binary* value, an arrestee is either "High Arrest Level" or not.
@@ -105,7 +106,35 @@ We perform the same preprocessing steps for the  **K-Nearest Neighbors** model w
 
 ## Visualization
 
+To better understand patterns in the ICE dataset, we built a set of custom visualizations.
+
+We use bar plots (`plot_bar_counts`) to show how often different values appear in each column. For date-based features like "Month-Year", we sort the bars chronologically. If there are too many categories, the plot switches to a horizontal layout for better readability. Plot sizes also adjust based on how much data is shown.
+
+To explore trends over time, we include two types of time series plots:
+- `plot_time_series_by_year`: groups records by fiscal year.
+- `plot_time_series`: shows monthly trends using resampled line plots.
+
+We also use heatmaps (`plot_heatmap` and `plot_heatmap_alt`) to visualize how two variables relate to each other.
+
+For numeric columns, we include distribution plots (`plot_distribution`) to show how values are spread out. We add integer tick marks for graphings where decimal numbers don't make sense.
+
+These visual tools are helpful for spotting patterns, trends or biases.
+
 ## Results
 
+### Visualization results
 
+The most glaring result from the visualizations was the significant over-representation of arrests against undocumented people of prior Mexican nationality. In general, we were able to notice the over-representation of Latin-American countries. In regards to arrest frequency based on area of residence, we found that the cities New York, Houston, Miami, and Los Angeles suggest a high-enforcement intensity. Another significant discovery was the majority of those arrested were due to the reason of *Other Immigration violator* or in other words, the singular crime of being undocumented.
+
+
+### Modeling Results
+
+Results from random forest regression showed us that features such as `Fiscal Year` and `Fiscal Month` had the highest importance. As mentioned from what we noticed in the visualizations, this modeling confirmed the significance of the `Area of Residence (AOR)` and prior Mexican citizenship as features that strongly influence arrest outcomes, suggesting a bias in enforcement patterns tied to both geography and nationality. The finding that the majority of these arrests were based on soley immigration status violations add to the significance of this overt over-representation.
+
+
+The results from our KNN modeling:
+- Accuracy: 86%
+- Precision and Recall (High arrest class): ~70%
+
+This tells us that high arrests are predictable, based off location and nationality, large-scale detainments can be anticipated.
 
