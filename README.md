@@ -33,6 +33,7 @@ From there, run the desired files:
 `python3 [file-name].py`
 
 
+### Include links to download data below
 
 ## Goal(s)
 From a general browsing of the yearly trends, we can see a consistent (and disconcerting) increase in all forms of activity throughout the country. The goal of this project is to identify and measure the extent to which specific demographics are disproportionately affected by anti-migrant operations, as well as nalyze regional trends such as locations where ICE activity is higher and making informed predictions on future trends.
