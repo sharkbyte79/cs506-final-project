@@ -39,6 +39,8 @@ def csv_to_df(fpath: str) -> DataFrame:
     # Convert them back to formatted strings to strip this
     df["Month-Year"] = df["Month-Year"].dt.strftime("%b %Y")
 
+    df["Id"] = df.index # ease of reference
+
     return df
 
 
@@ -77,6 +79,11 @@ def arrests_in_aor_by_month_year(df: DataFrame) -> DataFrame:
     )
 
     grouped_df = grouped_df.reset_index()
+    grouped_df["Month-Year"] = to_datetime(grouped_df["Month-Year"], format="%b %Y")
+    grouped_df = grouped_df.sort_values("Month-Year")
+    grouped_df["Month-Year"] = grouped_df["Month-Year"].dt.strftime("%b %Y")
+
+
     return grouped_df
 
 
