@@ -8,7 +8,6 @@ from geopy.geocoders import Nominatim
 
 # wrapper functions for data manipulation and preprocessing
 
-
 def csv_to_df(fpath: str) -> DataFrame:
     """Returns the csv specified by fpath as a DataFrame with basic processing"""
     if not fpath.endswith(".csv"):
@@ -44,17 +43,25 @@ def csv_to_df(fpath: str) -> DataFrame:
 
 def aor_to_longitude(df: DataFrame) -> DataFrame:
     """Returns a version of the given DataFrame df with AOR converted to latitude and longitude features"""
+    # NOTE: This function is SLOW. To respect OSM's rate limit, it will take as many seconds as there are entries
     df = df.dropna(subset=['AOR']) 
     geolocator = Nominatim(user_agent='pierce77@bu.edu') # must pass email to avoid being blocked by openstreetmap api
-    df[["Latitude", "Longitude"]] = df["AOR"].apply(lambda aor: get_latlong(aor, geolocator))
-    return df.drop("AOR", axis=1)
+    latlong_cache: dict[str, Series] = {}
+    df[["Latitude", "Longitude"]] = df["AOR"].apply(lambda aor: get_latlong(aor, latlong_cache, geolocator)) 
+    # return df.drop("AOR", axis=1)
+    return df
 
 
-def get_latlong(aor: str, geolocator) -> Series:
+def get_latlong(aor: str, cache: dict[str, Series], geolocator: Nominatim) -> Series:
     """Gets the latitude and longitude for an AOR"""
+    # just return the latlong if we've already received it
+    if aor in cache:
+        return cache[aor]
+
     time.sleep(1)  # sleep for a second to respect rate limits
     loc = geolocator.geocode(aor.lower())
-    return Series([loc.latitude, loc.longitude]) 
+    cache[aor] = Series([loc.latitude, loc.longitude]) # store this latlong for later
+    return cache[aor]
 
 
 def encode_and_scale(
