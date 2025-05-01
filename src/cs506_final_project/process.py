@@ -8,6 +8,7 @@ from geopy.geocoders import Nominatim
 
 # wrapper functions for data manipulation and preprocessing
 
+
 def csv_to_df(fpath: str) -> DataFrame:
     """Returns the csv specified by fpath as a DataFrame with basic processing"""
     if not fpath.endswith(".csv"):
@@ -43,11 +44,15 @@ def csv_to_df(fpath: str) -> DataFrame:
 
 def aor_to_longitude(df: DataFrame) -> DataFrame:
     """Returns a version of the given DataFrame df with AOR converted to latitude and longitude features"""
-    # NOTE: This function is SLOW. To respect OSM's rate limit, it will take as many seconds as there are entries
-    df = df.dropna(subset=['AOR']) 
-    geolocator = Nominatim(user_agent='pierce77@bu.edu') # must pass email to avoid being blocked by openstreetmap api
+    # NOTE: This function is SLOW in order to respect OpenStreetMap's rate limit
+    df = df.dropna(subset=["AOR"])
+    geolocator = Nominatim(
+        user_agent="pierce77@bu.edu"
+    )  # must pass email to avoid being blocked by openstreetmap api
     latlong_cache: dict[str, Series] = {}
-    df[["Latitude", "Longitude"]] = df["AOR"].apply(lambda aor: get_latlong(aor, latlong_cache, geolocator)) 
+    df[["Latitude", "Longitude"]] = df["AOR"].apply(
+        lambda aor: get_latlong(aor, latlong_cache, geolocator)
+    )
     # return df.drop("AOR", axis=1)
     return df
 
@@ -60,8 +65,19 @@ def get_latlong(aor: str, cache: dict[str, Series], geolocator: Nominatim) -> Se
 
     time.sleep(1)  # sleep for a second to respect rate limits
     loc = geolocator.geocode(aor.lower())
-    cache[aor] = Series([loc.latitude, loc.longitude]) # store this latlong for later
+    cache[aor] = Series([loc.latitude, loc.longitude])  # store this latlong for later
     return cache[aor]
+
+
+def arrests_in_aor_by_month_year(df: DataFrame) -> DataFrame:
+    "Returns a DataFrame containing entries for the number of arrests per each Month-Year in an AOR"
+    # Create a new DataFrame where there is an entry for each AOR's total number of arrests for a given Month-Year
+    grouped_df = df.groupby(["AOR", "Latitude", "Longitude", "Month-Year"]).agg(
+        {"Arrests": "sum"}
+    )
+
+    grouped_df = grouped_df.reset_index()
+    return grouped_df
 
 
 def encode_and_scale(
