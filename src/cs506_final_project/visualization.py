@@ -3,6 +3,7 @@ from matplotlib.ticker import MaxNLocator
 import pandas as pd
 from pathlib import Path
 import seaborn as sns
+import plotly.express as px
 
 
 from cs506_final_project.process import csv_to_df
@@ -159,6 +160,28 @@ def plot_distribution(df, column_name, integer_ticks=False, bins=7):
     # plt.title(f'Box Plot of {column_name}')
     # plt.tight_layout()
     # plt.show()
+
+def arrest_density_bubble_mapped(df: pd.DataFrame):
+    df["Month-Year"] = pd.to_datetime(df["Month-Year"], format="%b %Y")
+
+    fig = px.scatter_mapbox(
+        df,
+        lat="Latitude",
+        lon="Longitude",
+        size="Arrests",  # Bubble size
+        color="Arrests",  # Bubble color
+        hover_name="AOR",
+        hover_data={"Latitude": False, "Longitude": False, "Arrests": True},
+        animation_frame=df["Month-Year"].dt.strftime("%b %Y"),
+        size_max=65,
+        zoom=3,
+        mapbox_style="carto-darkmatter",
+        title="ICE Arrests by AOR Monthly (2021–2024)"
+    )
+
+    fig.update_layout(margin={"r":0,"t":50,"l":0,"b":0})
+    fig.show()
+
 
 
 def print_column_stats(df, column_name):
