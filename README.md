@@ -26,7 +26,7 @@ python3 -m venv venv # this creates the virtual environment
 
 pip install -r requirements.txt
 
-# Now in vs-code or your editor of choice that supports jupityer notebooks you will be able to run the final notebook forecast_analysis.ipynb
+# Now in vs-code or your editor of choice that supports jupityer notebooks you will be able to run the final notebook forecast_analysis.ipynb. There is no other requirements. 
 
 ```
 
