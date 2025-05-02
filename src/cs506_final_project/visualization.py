@@ -176,12 +176,37 @@ def arrest_density_bubble_mapped(df: pd.DataFrame):
         size_max=65,
         zoom=3,
         mapbox_style="carto-darkmatter",
-        title="ICE Arrests by AOR Monthly (2021–2024)"
+        title="ICE Arrests by AOR Monthly"
     )
 
     fig.update_layout(margin={"r":0,"t":50,"l":0,"b":0})
     fig.show()
 
+def citizenship_bubble_mapped(df):
+    df["Month-Year"] = pd.to_datetime(df["Month-Year"], format="%b %Y")
+
+    fig = px.scatter_mapbox(
+        df,
+        lat="Latitude",
+        lon="Longitude",
+        size="Arrests",
+        color="Citizenship",
+        hover_name="AOR",
+        hover_data={
+            "Citizenship": True,
+            "Arrests": True,
+            "Latitude": False,
+            "Longitude": False
+        },
+        animation_frame=df["Month-Year"].dt.strftime("%b %Y"),
+        size_max=65,
+        zoom=3,
+        mapbox_style="carto-darkmatter",
+        title="ICE Arrests by AOR and Citizenship Monthly"
+    )
+
+    fig.update_layout(margin={"r":0,"t":50,"l":0,"b":0})
+    fig.show()
 
 
 def print_column_stats(df, column_name):
