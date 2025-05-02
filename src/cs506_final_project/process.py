@@ -181,7 +181,6 @@ def encode_and_scale(
     train_df[numerical] = scaler.fit_transform(train_df[numerical])
     test_df[numerical] = scaler.fit(test_df[numerical])
 
-    # TODO: define X_train, Y_train, etc for model training
 
 
 def split_data(df: DataFrame) -> tuple[DataFrame, DataFrame]:
@@ -192,24 +191,23 @@ def split_data(df: DataFrame) -> tuple[DataFrame, DataFrame]:
 
     return train, test
 
-panels = 
 
-feature_cols = ['t','month_sin','month_cos'] + \
-               [f'y_lag{i}' for i in range(1, N_LAGS+1)] + \
-               ['roll_mean_3','roll_std_3']
+# feature_cols = ['t','month_sin','month_cos'] + \
+#                [f'y_lag{i}' for i in range(1, N_LAGS+1)] + \
+#                ['roll_mean_3','roll_std_3']
 
-full_frames = []
-for eth, grp in panel.groupby('ethnicity'):
-    full_frames.append(make_features(grp))
-full_df = pd.concat(full_frames, ignore_index=True)
-model.fit(full_df[feature_cols], full_df['y'])
+# full_frames = []
+# for eth, grp in panel.groupby('ethnicity'):
+#     full_frames.append(make_features(grp))
+# full_df = pd.concat(full_frames, ignore_index=True)
+# model.fit(full_df[feature_cols], full_df['y'])
 
-results = []
-for eth, grp in panel.groupby('ethnicity'):
-    buf = grp[['ds','y']].copy().reset_index(drop=True)
-    future_dates = pd.date_range(start=last_date + offset, periods=HORIZON, freq=FREQ)
-    for dt in future_dates:
-        feats = make_features(buf).iloc[[-1]][feature_cols]
-        y_pred = model.predict(feats)[0]
-        results.append({'ethnicity':eth, 'ds':dt, 'y_pred':y_pred})
-        buf = pd.concat([buf, pd.DataFrame([{'ds':dt,'y':y_pred}])], ignore_index=True)
+# results = []
+# for eth, grp in panel.groupby('ethnicity'):
+#     buf = grp[['ds','y']].copy().reset_index(drop=True)
+#     future_dates = pd.date_range(start=last_date + offset, periods=HORIZON, freq=FREQ)
+#     for dt in future_dates:
+#         feats = make_features(buf).iloc[[-1]][feature_cols]
+#         y_pred = model.predict(feats)[0]
+#         results.append({'ethnicity':eth, 'ds':dt, 'y_pred':y_pred})
+#         buf = pd.concat([buf, pd.DataFrame([{'ds':dt,'y':y_pred}])], ignore_index=True)

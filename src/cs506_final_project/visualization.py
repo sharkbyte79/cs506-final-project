@@ -6,7 +6,7 @@ import seaborn as sns
 import plotly.express as px
 
 
-from cs506_final_project.process import csv_to_df
+from process import csv_to_df
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TARGET_FILE = "ICE_data.csv"
@@ -33,7 +33,7 @@ def plot_bar_counts(
     if try_parse_dates:
         date_index = pd.to_datetime(value_counts.index, format="%b %Y", errors="coerce")
         if date_index.notna().all():
-            sorted_index = date_index.sort_values(ascending=ascending).index
+            sorted_index = date_index.sort_values(ascending=ascending).reindex
             value_counts = value_counts.iloc[sorted_index]
         else:
             value_counts = value_counts.sort_values(ascending=ascending)
