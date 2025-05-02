@@ -14,13 +14,21 @@ See the final presentation [here]().
 ## IMPORTANT NOTE
 For some of the preceding sections, look for a "Final" subsection so that we can demonstrate how our methodology changed or evolved since the midterm report. 
 
-### Files
+### Reproduce Our Results
 
-***Check section Makefile to see how to reproduce our results***
+You are to first create a virtual environment within the `cs506-final-project`. 
 
-### Makefile
+The commands are as follows:
 
-Information will be added here once we figure this stuff out. 
+```bash
+# create venv
+python3 -m venv venv # this creates the virtual environment
+
+pip install -r requirements.txt
+
+# Now in vs-code or your editor of choice that supports jupityer notebooks you will be able to run the final notebook forecast_analysis.ipynb
+
+```
 
 ## Goal(s)
 From a general browsing of the yearly trends, we can see a consistent (and disconcerting) increase in all forms of activity throughout the country. The goal of this project is to identify and measure the extent to which specific demographics are disproportionately affected by anti-migrant operations, as well as analyze regional trends such as locations where ICE activity is higher and making informed predictions on future trends.
